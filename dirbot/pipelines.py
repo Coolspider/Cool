@@ -7,7 +7,7 @@ class FilterWordsPipeline(object):
 
 
     def process_item(self, item, spider):
-        #print '______________process_item'
+        print '______________process_item'
         #for url in unicode(item['urls']):
         #   raise DropItem("Contains forbidden word: %s\n" %url)
         #else:
