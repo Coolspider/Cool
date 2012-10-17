@@ -13,14 +13,15 @@ class CoolSpider(BaseSpider):
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
-        sites = hxs.select('//li')
+        sites = hxs.select('//body')
         items = []
-
-        for site in sites:
-            item = Website()
-            item['urls'] = site.select('//a/@href').extract()
-            #item['url'] = site.select('a/@href').extract()
-            #item['description'] = site.select('text()').extract()
-            items.append(item)
+        #print 'sites %s \nlen:%d\n' %(sites, len(sites))
+        #for site in sites:
+        item = Website()
+        #divs = site.select('//div[contains(@class,"post")]')
+        item['urls'] = sites.select('//a[contains(@class,"title")]/@href').extract()
+        #item['description'] = site.select('text()').extract()
+        #print "prase the url: %s\n" %(item['urls'])
+        items.append(item)
 
         return items
