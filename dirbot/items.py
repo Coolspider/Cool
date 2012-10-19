@@ -17,7 +17,7 @@ class Website(DirbotItem):
         #con_url = {}
         #con_url = self.get('urls')
         #print '____________________________Website'
-        print 'the url: %s\n'%(self.get('articl_url'))
-        print 'the url: %s\n'%(self.get('page_url'))
-        print 'the url: %s\n'%(self.get('urls'))
+        print 'the articl url: %s\n'%(self.get('articl_url'))
+        print 'the page url: %s\n'%(self.get('page_url'))
+        print 'the content url: %s\n'%(self.get('content_url'))
         return 'sucess'

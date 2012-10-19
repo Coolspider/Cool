@@ -16,35 +16,42 @@ class CoolSpider(BaseSpider):
     ]
 
     def parse(self, response):
-        #hxs = HtmlXPathSelector(response)
+        hxs = HtmlXPathSelector(response)
         #sites = hxs.select('//body')
         items = []
         #global page_url
         #print 'sites %s \nlen:%d\n' %(sites, len(sites))
         #for site in sites:
         item = Website()
-        item['articl_url'] = []
+        page_num_info = hxs.select('//span[contains(@class, "pages")]/text()').extract()
+        page_num = page_num_info[0].split()
+        page_urls = hxs.select('//a[contains(@class, "page")]/@href').extract()
+        page_nums = hxs.select('//a[contains(@class, "page")]/text()').extract()
+        tm_page_url = self.page_url_process(page_nums, page_urls)
+        item['articl_url'] = hxs.select('//a[contains(@class,"title")]/@href').extract()$
         item['page_url'] = []
+        item['page_url'].append(tm_page_url)
         item['content_url'] = []
-        articl_item = item['articl_url']
-        #divs = site.select('//div[contains(@class,"post")]')
-        #item['urls'] = sites.select('//a[contains(@class,"title")]/@href').extract()
-        #item['description'] = site.select('text()').extract()
-        #print "prase the url: %s\n" %(item['urls'])
-        self.parse_articl_url(response, articl_item)
-        self.parse_page_url(response, item['page_url'])
+        url_id = 0
+        while url_id != len(item['page_url']) -1:
+            Request(page_url[url_id], callback=self.parse_articl_url)
+            Request(page_url[url_id], callback=self.parse_page_url
+            l_len +=1
         #print item['articl_url']
         #print articl_item
         items.append(item)
         return items
-    def parse_articl_url(self, response, url_item):
+    def parse_articl_url(self, response):
+        url_item = response.meta['item']
         hxs = HtmlXPathSelector(response)
         url = hxs.select('//a[contains(@class,"title")]/@href').extract()
-        url_item.append(url)
+        print 'artcil url: %s' %(url)
+        url_item['articl_url'].append(url)
     def parse_articl_content(self, response):
         hxs = HtmlXPathSelector(response)
         return hxs.select('//body').extract()
     def parse_page_url(self, response):
+        url_item = response.meta['item']$
         hxs = HtmlXPathSelector(response)
         sites = hxs.select('//body')
         page_div = sites.select('//div[contains(@id, "pagenavi")]')
@@ -53,15 +60,16 @@ class CoolSpider(BaseSpider):
         page_num = page_num_info[0].split()
         page_urls = page_div.select('//a[contains(@class, "page")]/@href').extract()
         page_nums = page_div.select('//a[contains(@class, "page")]/text()').extract()
-        #print 'page_nums %s \nurls %s\n len %d\n' %(page_nums, page_urls, len(page_urls))
+        tm_page_url = self.page_url_process(page_nums, page_urls)
+        if tm_page_url != 0:
+            url_item['page_url'].append(tm_page_url)
+    def page_url_process(self, page_nums, page_urls,  page_num):
         for n_count in range(len(page_nums)):
             #print 'n_count %d   %d page_num %s\n' %(n_count, len(page_num), page_num)
             if string.atoi(page_num[1]) + 1 > string.atoi(page_num[3]):
                 print 'reach the blogs end\n'
-                #return items
-                break
+                return 0
             if string.atoi(page_num[1])+1 == string.atoi(page_nums[n_count]):
-                page_url = page_urls[n_count]
-                print 'n_count %d\npage_url %s\n' %(n_count, page_url)
-                return Request(page_url, callback=self.parse_page_url)
-
+                Page_url = page_urls[n_count]
+                print 'n_count %d\npage_url %s\n' %(n_count, Page_url)
+                return Page_url
