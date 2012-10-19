@@ -28,7 +28,7 @@ class CoolSpider(BaseSpider):
         page_urls = hxs.select('//a[contains(@class, "page")]/@href').extract()
         page_nums = hxs.select('//a[contains(@class, "page")]/text()').extract()
         tm_page_url = self.page_url_process(page_nums, page_urls)
-        item['articl_url'] = hxs.select('//a[contains(@class,"title")]/@href').extract()$
+        item['articl_url'] = hxs.select('//a[contains(@class,"title")]/@href').extract()
         item['page_url'] = []
         item['page_url'].append(tm_page_url)
         item['content_url'] = []
