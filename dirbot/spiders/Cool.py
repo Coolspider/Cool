@@ -17,25 +17,41 @@ class CoolSpider(BaseSpider):
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
-        #sites = hxs.select('//body')
         items = []
-        #global page_url
-        #print 'sites %s \nlen:%d\n' %(sites, len(sites))
-        #for site in sites:
+        global page_request, articl_request
         item = Website()
-        item['articl_url'] = hxs.select('//a[contains(@class,"title")]/@href').extract()
+        item['articl_url'] = self.parse_articl_url(response)
+        page_url = self.parse_page_url(response)
         item['page_url'] = []
-        item['page_url'].append(tm_page_url)
-        item['content_url'] = []
-        return items
+        if page_url != 0:
+            item['page_url'].append(page_url)
+        item['content'] = []
+        item['articl_name'] = []
+        #print "articl url:%s\nlen:%d\n" %(item['articl_url'],len(item['articl_url']))
+        for t_count in range(len(item['articl_url'])):
+            articl_url = item['articl_url'][t_count]
+            print "##################requse url = %s\n" %(articl_url)
+            articl_request = Request(articl_url, callback=self.parse_articl_content)
+            articl_request.meta['item'] = item
+            yield articl_request
+            if t_count == len(item['articl_url']) - 1:
+                if item['page_url']:
+                    print '$$$$$$$$$$$$$$$$$$$$$$$$page url %s\n' %(item['page_url'][0])
+                    page_request = Request(item['page_url'][0], callback=self.parse)
+                    #yield page_request
     def parse_articl_url(self, response):
         hxs = HtmlXPathSelector(response)
         url = hxs.select('//a[contains(@class,"title")]/@href').extract()
         print 'artcil url: %s' %(url)
         return url
     def parse_articl_content(self, response):
+        item = response.meta['item']
         hxs = HtmlXPathSelector(response)
-        return hxs.select('//body').extract()
+        name_div = hxs.select('//div[@class="post"]')
+        item['articl_name'] = name_div.select('//h2/text()').extract()
+        item['content'] = hxs.select('//body').extract()
+        #print item['content']
+        return item
     def parse_page_url(self, response):
         hxs = HtmlXPathSelector(response)
         sites = hxs.select('//body')
