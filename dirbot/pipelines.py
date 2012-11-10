@@ -7,8 +7,12 @@ class FilterWordsPipeline(object):
 
 
     def process_item(self, item, spider):
-        articl_name = '~/articl/%s' %(item['articl_name'][0])
+        tmp_name = u'%s' %(item['articl_name'][0])
+        articl_name = u'/home/chen/articl/%s.html' %(tmp_name)
+        print 'articl name :%s' %(articl_name)
+        #articl_name = '/home/chen/articl/tmp.data'
         fp = open(articl_name, 'w')
-        fp.write(item['content'][0])
+        for str_tmp in item['content']:
+            fp.write(str_tmp.encode('utf-8'))
         fp.close()
         return item

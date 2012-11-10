@@ -38,10 +38,12 @@ class CoolSpider(BaseSpider):
                 if item['page_url']:
                     print '$$$$$$$$$$$$$$$$$$$$$$$$page url %s\n' %(item['page_url'][0])
                     page_request = Request(item['page_url'][0], callback=self.parse)
-                    #yield page_request
+                    yield page_request
+                else:
+                    yield 'go to the last page, done!!!\n'
     def parse_articl_url(self, response):
         hxs = HtmlXPathSelector(response)
-        url = hxs.select('//a[contains(@class,"title")]/@href').extract()
+        url = hxs.select('//h2/a[contains(@class,"title")]/@href').extract()
         print 'artcil url: %s' %(url)
         return url
     def parse_articl_content(self, response):
@@ -49,7 +51,7 @@ class CoolSpider(BaseSpider):
         hxs = HtmlXPathSelector(response)
         name_div = hxs.select('//div[@class="post"]')
         item['articl_name'] = name_div.select('//h2/text()').extract()
-        item['content'] = hxs.select('//body').extract()
+        item['content'] = hxs.select('//html').extract()
         #print item['content']
         return item
     def parse_page_url(self, response):

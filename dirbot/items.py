@@ -20,6 +20,6 @@ class Website(DirbotItem):
         #print '____________________________Website'
         print 'the articl url: %s\n'%(self.get('articl_url'))
         print 'the page url: %s\n'%(self.get('page_url'))
-        print 'the content: %s\n'%(self.get('content'))
+        #print 'the content: %s\n'%(self.get('content'))
         print 'articl_name : %s\n'%(self.get('articl_name'))
         return 'sucess'
