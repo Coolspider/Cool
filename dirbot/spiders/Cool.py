@@ -36,7 +36,7 @@ class CoolSpider(BaseSpider):
             yield articl_request
             if t_count == len(item['articl_url']) - 1:
                 if item['page_url']:
-                    print '$$$$$$$$$$$$$$$$$$$$$$$$page url %s\n' %(item['page_url'][0])
+                    #print '$$$$$$$$$$$$$$$$$$$$$$$$page url %s\n' %(item['page_url'][0])
                     page_request = Request(item['page_url'][0], callback=self.parse)
                     yield page_request
                 else:
