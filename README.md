@@ -1,4 +1,4 @@
 Cool
 ====
 
-a samp spider
+a sample spider to fetch coolshell.cn
